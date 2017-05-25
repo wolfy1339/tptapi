@@ -9,29 +9,46 @@ def md5(data):
 class Client(object):
     def __init__(self):
        self.base_url = "http://powdertoy.co.uk"
-       self.session = requests.Session()
-       self.post = self.session.post
-       self.get = self.session.get
 
-       def login(self, user, password){
-            hash = md5("{0}-{1}".format(user, md5(password)))
-            form = {
-                "Username": user,
-                "Hash": hash
-            }
-            r = self.post(self.opts["url"] + "Login.json", data=form)
-            if r.status_code == requests.codes.ok:
-                self.loginData = r.json()
-                if len(j["Notifications"]):
-                    six.print_("User has a new notifications: "+", ".join(j["Notifications"]))
-               delete(self.loginData.Status)
-               delete(self.loginData.Notifications)
-            else:
-                raise errors.InvalidLogin()
-        return r.status_code == requests.codes.ok
+    def _get(url, params=None):
+        headers = {
+            "X-Auth-User-Id": 0,
+            "X-Auth-Session-Key": 0
+        }
+        if hasattr(self, 'loginData'):
+            headers["X-Auth-User-Id"] = self.loginData["UserID"]
+            headers["X-Auth-Session-Key"] = self.loginData["SessionKey"]
+        return requests.get(url, params=params, headers=headers)
+
+    def _post(url, params=None, data=None):
+        headers = {
+            "X-Auth-User-Id": 0,
+            "X-Auth-Session-Key": 0
+        }
+        if hasattr(self, 'loginData'):
+            headers["X-Auth-User-Id"] = self.loginData["UserID"]
+            headers["X-Auth-Session-Key"] = self.loginData["SessionKey"]
+        return requests.post(url, params=params, data=data, headers=headers)
+
+    def login(self, user, password){
+        hash = md5("{0}-{1}".format(user, md5(password)))
+        form = {
+            "Username": user,
+            "Hash": hash
+        }
+        r = self._post(self.opts["url"] + "Login.json", data=form)
+        if r.status_code == requests.codes.ok:
+            self.loginData = r.json()
+            if len(j["Notifications"]):
+                six.print_("User has a new notifications: "+", ".join(j["Notifications"]))
+           del self.loginData["Status"]
+           del self.loginData["Notifications"]
+        else:
+            raise errors.InvalidLogin()
+    return r.status_code == requests.codes.ok
 
     def checkLogin(self):
-        r = self.get(self.base_url + "/Login.json").json()
+        r = self._get(self.base_url + "/Login.json").json()
         return r["Status"] == 1
 
     def vote(self, id, type):
@@ -40,7 +57,7 @@ class Client(object):
             "ID": Number(id),
             "Action": (type>0):"Up":"Down"
         }
-        r = self.post(self.base_url + "/Vote.api", data=form)
+        r = self._post(self.base_url + "/Vote.api", data=form)
         return r.text() == "OK"
 
     def comment(self, id, content) {
@@ -48,7 +65,7 @@ class Client(object):
             "Comment": content
         }
         qs = {"ID": id}
-        r = self.post(self.base_url + "/Vote.api", data=form, params=qs)
+        r = self._post(self.base_url + "/Vote.api", data=form, params=qs)
         return r.status
 
     def addTag(self, id, tag){
@@ -58,7 +75,7 @@ class Client(object):
             "Op": "add",
             "Key": self.loginData.SessionKey
         }
-        r = self.get(self.base_url + "/Browse/EditTag.json", params=qs)
+        r = self._get(self.base_url + "/Browse/EditTag.json", params=qs)
         return r.status
 
     def delTag(self, id, tag):
@@ -68,7 +85,7 @@ class Client(object):
             "Op": "delete",
             "Key": self.loginData.SessionKey
        }
-       r = self.get(self.base_url + "/Browse/EditTag.json", params=qs)
+       r = self._get(self.base_url + "/Browse/EditTag.json", params=qs)
        return r.status
 
     def delSave(self, id):
@@ -77,7 +94,7 @@ class Client(object):
             "Mode": "Delete",
             "Key": self.loginData.SessionKey
         }
-        r = self.get(self.base_url + "/Browse/Delete.json", params=qs)
+        r = self._get(self.base_url + "/Browse/Delete.json", params=qs)
         return r.status
 
     def unpublishSave(self, id):
@@ -86,7 +103,7 @@ class Client(object):
             "Mode": "Unpublish",
             "Key": self.loginData.SessionKey
         }
-        r = self.get(self.base_url + "/Browse/Delete.json", params=qs)
+        r = self._get(self.base_url + "/Browse/Delete.json", params=qs)
         return r.status
 
     def publishSave(self, id, content):
@@ -97,12 +114,12 @@ class Client(object):
             "ID": id,
             "Key": self.loginData.SessionKey
         }
-        r = self.post(self.base_url + "/Browse/View.json", data=form, params=qs)
+        r = self._post(self.base_url + "/Browse/View.json", data=form, params=qs)
         return r.text() == "1"
 
     def setProfile(self, p):
         # type can be -1 or +1
-        r = self.post(self.base_url + "/Profile.json", data=p)
+        r = self._post(self.base_url + "/Profile.json", data=p)
         return r.text() == "OK"
 
     def browse(self, query, count,start):
@@ -111,7 +128,7 @@ class Client(object):
             Count: count,
             Search_Query: query
         }
-        r = self.get(self.base_url + "/Browse.json", params=qs)
+        r = self._get(self.base_url + "/Browse.json", params=qs)
         return r
 
     def listTags(self, c, s){
@@ -119,7 +136,7 @@ class Client(object):
             Start: s,
             Count: c
         }
-        r = self.get(self.base_url + "/Browse/Tags.json", params=qs)
+        r = self._get(self.base_url + "/Browse/Tags.json", params=qs)
         return rp(o)
 
     def fav(self, id){
@@ -127,7 +144,7 @@ class Client(object):
             "ID": id,
             "Key": self.loginData.SessionKey
         }
-        r = self.get(self.base_url + "/Browse/Favourite.json", params=qs)
+        r = self._get(self.base_url + "/Browse/Favourite.json", params=qs)
         return r.status
 
     def remfav(self, id){
@@ -136,7 +153,7 @@ class Client(object):
               "Key": self.loginData.SessionKey,
               "Mode": "Remove"
         }
-        r = self.get(self.base_url + "/Browse/Tags.json", params=qs)
+        r = self._get(self.base_url + "/Browse/Tags.json", params=qs)
         return r.status
 
     def save(self, name, desc, data):
@@ -146,7 +163,7 @@ class Client(object):
             "Description": desc,
             "Data": data
         }
-        r = self.post(self.base_url + "/Save.api", data=form)
+        r = self._post(self.base_url + "/Save.api", data=form)
         if r.text().split(" ")[0] == "OK":
             return r.text().split(" ")[1]
 
@@ -157,16 +174,16 @@ class Client(object):
             "Description": desc,
             "Data": data
         }
-        r = self.post(self.base_url + "/Vote.api", data=form)
+        r = self._post(self.base_url + "/Vote.api", data=form)
         return r.text() == "OK"
 
     def saveData(self, id) {
         qs = {"ID":id}
-        r = self.get(self.base_url + "/Browse/View.json", params=qs)
+        r = self._get(self.base_url + "/Browse/View.json", params=qs)
         return rp(o)
 
     def startup(self){
-        return self.get(self.base_url + "/Startup.json").json()
+        return self._get(self.base_url + "/Startup.json").json()
 
     def comments(self, id, count, start):
         qs = {
@@ -174,5 +191,5 @@ class Client(object):
             "Count": count,
             "ID": id
         }
-        r = self.get(self.base_url + "/Browse/Comments.json", params=qs)
+        r = self._get(self.base_url + "/Browse/Comments.json", params=qs)
         return rp(o)
