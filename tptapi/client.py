@@ -31,10 +31,9 @@ class Client(object):
         return requests.post(url, params=params, data=data, headers=headers)
 
     def login(self, user, password):
-        hash = md5("{0}-{1}".format(user, md5(password)))
         form = {
             "Username": user,
-            "Hash": hash
+            "Hash": md5("{0}-{1}".format(user, md5(password)))
         }
         r = self._post(self.opts["url"] + "Login.json", data=form)
         if r.status_code == requests.codes.ok:
@@ -51,26 +50,26 @@ class Client(object):
         r = self._get(self.base_url + "/Login.json").json()
         return r["Status"] == 1
 
-    def vote(self, id, type):
-        # type can be -1 or +1
+    def vote(self, ID, action):
+        # action can be -1 or +1
         form = {
-            "ID": Number(id),
-            "Action": "Up" if type > 0 else "Down"
+            "ID": int(ID),
+            "Action": "Up" if action > 0 else "Down"
         }
         r = self._post(self.base_url + "/Vote.api", data=form)
         return r.text() == "OK"
 
-    def comment(self, id, content):
+    def comment(self, ID, content):
         form = {
             "Comment": content
         }
-        qs = {"ID": id}
-        r = self._post(self.base_url + "/Vote.api", data=form, params=qs)
+        qs = {"ID": ID}
+        r = self._post(self.base_url + "/Browse/Comments.json", data=form, params=qs)
         return r.status
 
-    def addTag(self, id, tag):
+    def addTag(self, ID, tag):
         qs = {
-            "ID": id,
+            "ID": ID,
             "Tag": tag,
             "Op": "add",
             "Key": self.loginData.SessionKey
@@ -78,9 +77,9 @@ class Client(object):
         r = self._get(self.base_url + "/Browse/EditTag.json", params=qs)
         return r.status
 
-    def delTag(self, id, tag):
+    def delTag(self, ID, tag):
         qs = {
-            "ID": id,
+            "ID": ID,
             "Tag": tag,
             "Op": "delete",
             "Key": self.loginData.SessionKey
@@ -88,37 +87,37 @@ class Client(object):
         r = self._get(self.base_url + "/Browse/EditTag.json", params=qs)
         return r.status
 
-    def delSave(self, id):
+    def delSave(self, ID):
         qs = {
-            "ID": id,
+            "ID": ID,
             "Mode": "Delete",
             "Key": self.loginData.SessionKey
         }
         r = self._get(self.base_url + "/Browse/Delete.json", params=qs)
         return r.status
 
-    def unpublishSave(self, id):
+    def unpublishSave(self, ID):
         qs = {
-            "ID": id,
+            "ID": ID,
             "Mode": "Unpublish",
             "Key": self.loginData.SessionKey
         }
         r = self._get(self.base_url + "/Browse/Delete.json", params=qs)
         return r.status
 
-    def publishSave(self, id, content):
+    def publishSave(self, ID, content):
         form = {
             "ActionPublish": 1
         }
         qs = {
-            "ID": id,
+            "ID": ID,
             "Key": self.loginData.SessionKey
         }
         r = self._post(self.base_url + "/Browse/View.json", data=form, params=qs)
         return r.text() == "1"
 
     def setProfile(self, p):
-        # type can be -1 or +1
+        # action can be -1 or +1
         r = self._post(self.base_url + "/Profile.json", data=p)
         return r.text() == "OK"
 
@@ -139,17 +138,17 @@ class Client(object):
         r = self._get(self.base_url + "/Browse/Tags.json", params=qs)
         return rp(o)
 
-    def fav(self, id):
+    def fav(self, ID):
         qs = {
-            "ID": id,
+            "ID": ID,
             "Key": self.loginData.SessionKey
         }
         r = self._get(self.base_url + "/Browse/Favourite.json", params=qs)
         return r.status
 
-    def remfav(self, id):
+    def remfav(self, ID):
         qs = {
-              "ID": id,
+              "ID": ID,
               "Key": self.loginData.SessionKey,
               "Mode": "Remove"
         }
@@ -157,7 +156,7 @@ class Client(object):
         return r.status
 
     def save(self, name, desc, data):
-        # type can be -1 or +1
+        # action can be -1 or +1
         form = {
             "Name": name,
             "Description": desc,
@@ -167,29 +166,29 @@ class Client(object):
         if r.text().split(" ")[0] == "OK":
             return r.text().split(" ")[1]
 
-    def updateSave(self, id, data, desc):
-        # type can be -1 or +1
+    def updateSave(self, ID, data, desc):
+        # action can be -1 or +1
         form = {
-            "ID": Number(id),
+            "ID": Number(ID),
             "Description": desc,
             "Data": data
         }
         r = self._post(self.base_url + "/Vote.api", data=form)
         return r.text() == "OK"
 
-    def saveData(self, id):
-        qs = {"ID":id}
+    def saveData(self, ID):
+        qs = {"ID":ID}
         r = self._get(self.base_url + "/Browse/View.json", params=qs)
         return rp(o)
 
     def startup(self):
         return self._get(self.base_url + "/Startup.json").json()
 
-    def comments(self, id, count, start):
+    def comments(self, ID, count, start):
         qs = {
             "Start": start,
             "Count": count,
-            "ID": id
+            "ID": ID
         }
         r = self._get(self.base_url + "/Browse/Comments.json", params=qs)
         return rp(o)
