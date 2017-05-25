@@ -10,7 +10,7 @@ class Client(object):
     def __init__(self):
        self.base_url = "http://powdertoy.co.uk"
 
-    def _get(url, params=None):
+    def _get(self, url, params=None):
         headers = {
             "X-Auth-User-Id": 0,
             "X-Auth-Session-Key": 0
@@ -20,7 +20,7 @@ class Client(object):
             headers["X-Auth-Session-Key"] = self.loginData["SessionKey"]
         return requests.get(url, params=params, headers=headers)
 
-    def _post(url, params=None, data=None):
+    def _post(self, url, params=None, data=None):
         headers = {
             "X-Auth-User-Id": 0,
             "X-Auth-Session-Key": 0
