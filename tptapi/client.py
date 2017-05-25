@@ -37,7 +37,7 @@ class Client(object):
         }
         r = self._post(self.opts["url"] + "Login.json", data=form)
         if r.status_code == requests.codes.ok:
-            self.loginData = r.json()
+            self.loginData = j = r.json()
             if len(j["Notifications"]):
                 six.print_("User has a new notifications: "+", ".join(j["Notifications"]))
             del self.loginData["Status"]
