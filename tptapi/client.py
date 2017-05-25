@@ -8,7 +8,7 @@ def md5(data):
 
 class Client(object):
     def __init__(self):
-       self.base_url = "http://powdertoy.co.uk"
+        self.base_url = "http://powdertoy.co.uk"
 
     def _get(self, url, params=None):
         headers = {
@@ -123,17 +123,17 @@ class Client(object):
 
     def browse(self, query, count,start):
         qs = {
-            Start: start,
-            Count: count,
-            Search_Query: query
+            "Start": start,
+            "Count": count,
+            "Search_Query": query
         }
         r = self._get(self.base_url + "/Browse.json", params=qs)
         return r.json()
 
     def listTags(self, c, s):
         qs = {
-            Start: s,
-            Count: c
+            "Start": s,
+            "Count": c
         }
         r = self._get(self.base_url + "/Browse/Tags.json", params=qs)
         return r.json()["Tags"]
