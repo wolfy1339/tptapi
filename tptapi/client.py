@@ -4,7 +4,7 @@ import hashlib
 from . import errors
 
 def md5(data):
-    return hashlib.md5().update(bytes(data)).hexdigest()
+    return hashlib.md5(bytes(data)).hexdigest()
 
 class Client(object):
     def __init__(self):
