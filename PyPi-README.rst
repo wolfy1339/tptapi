@@ -1,7 +1,7 @@
 TPTAPI
 ======
 
-This package interacts with `The Powder Toy <powdertoy.co.uk>`__'s API.
+This package interacts with `The Powder Toy <http://powdertoy.co.uk>`__'s API.
 
 Usage:
 ------
