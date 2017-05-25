@@ -1,3 +1,5 @@
 *.pyc
 .pycache/*
 *~
+tptapi.egg-info/*
+.egg-info/*
