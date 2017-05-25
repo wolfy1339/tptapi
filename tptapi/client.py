@@ -30,7 +30,7 @@ class Client(object):
             headers["X-Auth-Session-Key"] = self.loginData["SessionKey"]
         return requests.post(url, params=params, data=data, headers=headers)
 
-    def login(self, user, password){
+    def login(self, user, password):
         hash = md5("{0}-{1}".format(user, md5(password)))
         form = {
             "Username": user,
@@ -41,11 +41,11 @@ class Client(object):
             self.loginData = r.json()
             if len(j["Notifications"]):
                 six.print_("User has a new notifications: "+", ".join(j["Notifications"]))
-           del self.loginData["Status"]
-           del self.loginData["Notifications"]
+            del self.loginData["Status"]
+            del self.loginData["Notifications"]
         else:
             raise errors.InvalidLogin()
-    return r.status_code == requests.codes.ok
+        return r.status_code == requests.codes.ok
 
     def checkLogin(self):
         r = self._get(self.base_url + "/Login.json").json()
@@ -55,12 +55,12 @@ class Client(object):
         # type can be -1 or +1
         form = {
             "ID": Number(id),
-            "Action": (type>0):"Up":"Down"
+            "Action": "Up" if type > 0 else "Down"
         }
         r = self._post(self.base_url + "/Vote.api", data=form)
         return r.text() == "OK"
 
-    def comment(self, id, content) {
+    def comment(self, id, content):
         form = {
             "Comment": content
         }
@@ -68,7 +68,7 @@ class Client(object):
         r = self._post(self.base_url + "/Vote.api", data=form, params=qs)
         return r.status
 
-    def addTag(self, id, tag){
+    def addTag(self, id, tag):
         qs = {
             "ID": id,
             "Tag": tag,
@@ -84,9 +84,9 @@ class Client(object):
             "Tag": tag,
             "Op": "delete",
             "Key": self.loginData.SessionKey
-       }
-       r = self._get(self.base_url + "/Browse/EditTag.json", params=qs)
-       return r.status
+        }
+        r = self._get(self.base_url + "/Browse/EditTag.json", params=qs)
+        return r.status
 
     def delSave(self, id):
         qs = {
@@ -131,7 +131,7 @@ class Client(object):
         r = self._get(self.base_url + "/Browse.json", params=qs)
         return r
 
-    def listTags(self, c, s){
+    def listTags(self, c, s):
         qs = {
             Start: s,
             Count: c
@@ -139,7 +139,7 @@ class Client(object):
         r = self._get(self.base_url + "/Browse/Tags.json", params=qs)
         return rp(o)
 
-    def fav(self, id){
+    def fav(self, id):
         qs = {
             "ID": id,
             "Key": self.loginData.SessionKey
@@ -147,7 +147,7 @@ class Client(object):
         r = self._get(self.base_url + "/Browse/Favourite.json", params=qs)
         return r.status
 
-    def remfav(self, id){
+    def remfav(self, id):
         qs = {
               "ID": id,
               "Key": self.loginData.SessionKey,
@@ -177,12 +177,12 @@ class Client(object):
         r = self._post(self.base_url + "/Vote.api", data=form)
         return r.text() == "OK"
 
-    def saveData(self, id) {
+    def saveData(self, id):
         qs = {"ID":id}
         r = self._get(self.base_url + "/Browse/View.json", params=qs)
         return rp(o)
 
-    def startup(self){
+    def startup(self):
         return self._get(self.base_url + "/Startup.json").json()
 
     def comments(self, id, count, start):
