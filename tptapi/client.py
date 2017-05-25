@@ -4,7 +4,7 @@ import hashlib
 from . import errors
 
 def md5(data):
-    return haslib.md5().update(bytes(data)).hexdigest()
+    return hashlib.md5().update(bytes(data)).hexdigest()
 
 class Client(object):
     def __init__(self)
@@ -28,6 +28,7 @@ class Client(object):
                delete(self.loginData.Notifications)
             else:
                 raise errors.InvalidLogin()
+        return r.status_code == requests.codes.ok
 
     def checkLogin(self):
         r = self.get(self.base_url + "/Login.json").json()
