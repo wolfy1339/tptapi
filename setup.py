@@ -9,7 +9,7 @@ if version_info < (2, 7, 0) or (version_info[0] == 3 and version_info < (3, 2, 0
     exit(-1)
 
 setup(name='zirc',
-      version='0.0.1',
+      version='0.1.0',
       description='A Python client to interact with powdertoy.co.uk',
       long_description=long_description,
       url='https://github.com/wolfy1339/tptapi',
@@ -21,7 +21,7 @@ setup(name='zirc',
       include_package_data=True,
       zip_safe=False,
       classifiers=[
-            'Development Status :: 1 - Planning',
+            'Development Status :: 3 - Alpha',
             'Intended Audience :: Developers',
             'License :: OSI Approved :: MIT License',
             'Programming Language :: Python',

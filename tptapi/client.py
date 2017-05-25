@@ -65,7 +65,7 @@ class Client(object):
         }
         qs = {"ID": ID}
         r = self._post(self.base_url + "/Browse/Comments.json", data=form, params=qs)
-        return r.status
+        return r.status_code == requests.codes.ok
 
     def addTag(self, ID, tag):
         qs = {
@@ -75,7 +75,7 @@ class Client(object):
             "Key": self.loginData.SessionKey
         }
         r = self._get(self.base_url + "/Browse/EditTag.json", params=qs)
-        return r.status
+        return r.status_code == requests.codes.ok
 
     def delTag(self, ID, tag):
         qs = {
@@ -94,7 +94,7 @@ class Client(object):
             "Key": self.loginData.SessionKey
         }
         r = self._get(self.base_url + "/Browse/Delete.json", params=qs)
-        return r.status
+        return r.status_code == requests.codes.ok
 
     def unpublishSave(self, ID):
         qs = {
@@ -103,7 +103,7 @@ class Client(object):
             "Key": self.loginData.SessionKey
         }
         r = self._get(self.base_url + "/Browse/Delete.json", params=qs)
-        return r.status
+        return r.status_code == requests.codes.ok
 
     def publishSave(self, ID, content):
         form = {
@@ -128,7 +128,7 @@ class Client(object):
             Search_Query: query
         }
         r = self._get(self.base_url + "/Browse.json", params=qs)
-        return r
+        return r.json()
 
     def listTags(self, c, s):
         qs = {
@@ -136,7 +136,7 @@ class Client(object):
             Count: c
         }
         r = self._get(self.base_url + "/Browse/Tags.json", params=qs)
-        return rp(o)
+        return r.json()["Tags"]
 
     def fav(self, ID):
         qs = {
@@ -144,7 +144,7 @@ class Client(object):
             "Key": self.loginData.SessionKey
         }
         r = self._get(self.base_url + "/Browse/Favourite.json", params=qs)
-        return r.status
+        return r.status_code == requests.codes.ok
 
     def remfav(self, ID):
         qs = {
@@ -153,7 +153,7 @@ class Client(object):
               "Mode": "Remove"
         }
         r = self._get(self.base_url + "/Browse/Tags.json", params=qs)
-        return r.status
+        return r.status_code == requests.codes.ok
 
     def save(self, name, desc, data):
         # action can be -1 or +1
@@ -169,7 +169,7 @@ class Client(object):
     def updateSave(self, ID, data, desc):
         # action can be -1 or +1
         form = {
-            "ID": Number(ID),
+            "ID": int(ID),
             "Description": desc,
             "Data": data
         }
@@ -177,9 +177,9 @@ class Client(object):
         return r.text() == "OK"
 
     def saveData(self, ID):
-        qs = {"ID":ID}
+        qs = {"ID": ID}
         r = self._get(self.base_url + "/Browse/View.json", params=qs)
-        return rp(o)
+        return r.json()
 
     def startup(self):
         return self._get(self.base_url + "/Startup.json").json()
@@ -191,4 +191,4 @@ class Client(object):
             "ID": ID
         }
         r = self._get(self.base_url + "/Browse/Comments.json", params=qs)
-        return rp(o)
+        return r.json()
