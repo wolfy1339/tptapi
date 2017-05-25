@@ -3,3 +3,5 @@
 *~
 tptapi.egg-info/*
 .egg-info/*
+build/*
+dist/*
