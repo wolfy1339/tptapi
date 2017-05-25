@@ -9,7 +9,7 @@ if version_info < (2, 7, 0) or (version_info[0] == 3 and version_info < (3, 2, 0
     exit(-1)
 
 setup(name='tptapi',
-      version='0.1.0',
+      version='0.1.1',
       description='A Python client to interact with powdertoy.co.uk',
       long_description=long_description,
       url='https://github.com/wolfy1339/tptapi',
