@@ -7,7 +7,7 @@ def md5(data):
     return hashlib.md5().update(bytes(data)).hexdigest()
 
 class Client(object):
-    def __init__(self)
+    def __init__(self):
        self.base_url = "http://powdertoy.co.uk"
        self.session = requests.Session()
        self.post = self.session.post
