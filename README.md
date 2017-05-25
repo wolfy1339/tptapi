@@ -3,6 +3,12 @@ This package interacts with [The Powder Toy](powdertoy.co.uk)'s API.
 
 ## Usage:
 
+```python
+import tptapi
+
+client = tptapi.Client()
+```
+
 ### Login
 Most actions need a session token you can obtain from Login: `client.login(user, passwd);` returns a boolean.
 
