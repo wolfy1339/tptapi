@@ -1,5 +1,5 @@
 # TPTAPI
-This package interacts with [The Powder Toy](powdertoy.co.uk)'s API.
+This package interacts with [The Powder Toy](http://powdertoy.co.uk)'s API.
 
 ## Usage:
 
