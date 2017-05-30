@@ -6,6 +6,12 @@ This package interacts with `The Powder Toy <http://powdertoy.co.uk>`__'s API.
 Usage:
 ------
 
+.. code:: python
+
+    import tptapi
+
+    client = tptapi.Client()
+
 Login
 ~~~~~
 
@@ -22,7 +28,7 @@ Vote [LOGIN NEEDED]
 ~~~~~~~~~~~~~~~~~~~
 
 To cast a vote, you need to do ``client.vote(id, type)`` where type is a
-negative or positive number that defines if its a upvote or downvote.
+negative or positive number that defines if it's a upvote or downvote.
 Returns a boolean.
 
 Comment [LOGIN NEEDED]
