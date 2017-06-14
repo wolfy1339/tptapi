@@ -5,7 +5,7 @@ with open("README.rst") as f:
     long_description = f.read().replace("\r", "")
 
 if version_info < (2, 7, 0) or (version_info[0] == 3 and version_info < (3, 3, 0)):
-    stderr.write('tptapi requires Python 2.7 or 3.2 and higher')
+    stderr.write('tptapi requires Python 2.7 or 3.3 and higher')
     exit(-1)
 
 setup(name='tptapi',
@@ -24,6 +24,8 @@ setup(name='tptapi',
             'Development Status :: 3 - Alpha',
             'Intended Audience :: Developers',
             'License :: OSI Approved :: MIT License',
+            'Natural Language :: English',
+            'Programming Language :: Python :: Implementation :: CPython',
             'Programming Language :: Python',
             'Programming Language :: Python :: 2.7',
             'Programming Language :: Python :: 3',
@@ -31,4 +33,7 @@ setup(name='tptapi',
             'Programming Language :: Python :: 3.4',
             'Programming Language :: Python :: 3.5',
             'Programming Language :: Python :: 3.6',
+            'Topic :: Software Development :: Libraries :: Python Modules',
+            'Topic :: Internet :: WWW/HTTP'
+            
       ])
