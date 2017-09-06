@@ -9,6 +9,7 @@ def md5(data):
 class Client(object):
     def __init__(self):
         self.base_url = "http://powdertoy.co.uk"
+        self.session = requests.Session()
 
     def _get(self, url, params=None):
         headers = {
@@ -18,7 +19,7 @@ class Client(object):
         if hasattr(self, 'loginData'):
             headers["X-Auth-User-Id"] = self.loginData["UserID"]
             headers["X-Auth-Session-Key"] = self.loginData["SessionKey"]
-        return requests.get(url, params=params, headers=headers)
+        return self.session.get(url, params=params, headers=headers)
 
     def _post(self, url, params=None, data=None):
         headers = {
@@ -28,7 +29,7 @@ class Client(object):
         if hasattr(self, 'loginData'):
             headers["X-Auth-User-Id"] = self.loginData["UserID"]
             headers["X-Auth-Session-Key"] = self.loginData["SessionKey"]
-        return requests.post(url, params=params, data=data, headers=headers)
+        return self.session.post(url, params=params, data=data, headers=headers)
 
     def login(self, user, password):
         """Client.login(user, password)
@@ -38,7 +39,7 @@ class Client(object):
             "Hash": md5("{0}-{1}".format(user, md5(password)))
         }
         r = self._post(self.base_url + "/Login.json", data=form)
-        if r.status_code == requests.codes.ok:
+        if r.json()['Status'] == 1:
             self.loginData = j = r.json()
             self.loginData["UserID"] = str(j["UserID"])
             self.loginData["SessionKey"] = str(j["SessionKey"])
@@ -47,8 +48,8 @@ class Client(object):
             del self.loginData["Status"]
             del self.loginData["Notifications"]
         else:
-            raise errors.InvalidLogin()
-        return r.status_code == requests.codes.ok
+            raise errors.InvalidLogin("There was a problem logging you in.")
+        return r.json()['Status'] == 1
 
     def checkLogin(self):
         """Checks if your login is valid"""
@@ -76,7 +77,9 @@ class Client(object):
         }
         qs = {"ID": ID}
         r = self._post(self.base_url + "/Browse/Comments.json", data=form, params=qs)
-        return r.status_code == requests.codes.ok
+        if r.json["Status"] == 0:
+            raise errors.InvalidLogin("You are not logged in.")
+        return r.json['Status'] == 1
 
     def addTag(self, ID, tag):
         """Adds a tag to a specified save ID.
@@ -85,7 +88,7 @@ class Client(object):
             "ID": ID,
             "Tag": tag,
             "Op": "add",
-            "Key": self.loginData.SessionKey
+            "Key": self.loginData['SessionKey']
         }
         r = self._get(self.base_url + "/Browse/EditTag.json", params=qs)
         return r.status_code == requests.codes.ok
@@ -97,7 +100,7 @@ class Client(object):
             "ID": ID,
             "Tag": tag,
             "Op": "delete",
-            "Key": self.loginData.SessionKey
+            "Key": self.loginData['SessionKey']
         }
         r = self._get(self.base_url + "/Browse/EditTag.json", params=qs)
         return r.status
@@ -108,7 +111,7 @@ class Client(object):
         qs = {
             "ID": ID,
             "Mode": "Delete",
-            "Key": self.loginData.SessionKey
+            "Key": self.loginData['SessionKey']
         }
         r = self._get(self.base_url + "/Browse/Delete.json", params=qs)
         return r.status_code == requests.codes.ok
@@ -119,7 +122,7 @@ class Client(object):
         qs = {
             "ID": ID,
             "Mode": "Unpublish",
-            "Key": self.loginData.SessionKey
+            "Key": self.loginData['SessionKey']
         }
         r = self._get(self.base_url + "/Browse/Delete.json", params=qs)
         return r.status_code == requests.codes.ok
@@ -132,7 +135,7 @@ class Client(object):
         }
         qs = {
             "ID": ID,
-            "Key": self.loginData.SessionKey
+            "Key": self.loginData["SessionKey"]
         }
         r = self._post(self.base_url + "/Browse/View.json", data=form, params=qs)
         return r.text() == "1"
@@ -177,7 +180,7 @@ class Client(object):
         """Favourite a save"""
         qs = {
             "ID": ID,
-            "Key": self.loginData.SessionKey
+            "Key": self.loginData["SessionKey"]
         }
         r = self._get(self.base_url + "/Browse/Favourite.json", params=qs)
         return r.status_code == requests.codes.ok
@@ -186,7 +189,7 @@ class Client(object):
         """Remove a save from your favourites"""
         qs = {
               "ID": ID,
-              "Key": self.loginData.SessionKey,
+              "Key": self.loginData["SessionKey"],
               "Mode": "Remove"
         }
         r = self._get(self.base_url + "/Browse/Tags.json", params=qs)
