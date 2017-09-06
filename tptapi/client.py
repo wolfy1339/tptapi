@@ -4,7 +4,7 @@ import hashlib
 from . import errors
 
 def md5(data):
-    return hashlib.md5(bytes(data)).hexdigest()
+    return hashlib.md5(data.encode("utf-8")).hexdigest()
 
 class Client(object):
     def __init__(self):
@@ -12,8 +12,8 @@ class Client(object):
 
     def _get(self, url, params=None):
         headers = {
-            "X-Auth-User-Id": 0,
-            "X-Auth-Session-Key": 0
+            "X-Auth-User-Id": "0",
+            "X-Auth-Session-Key": "0"
         }
         if hasattr(self, 'loginData'):
             headers["X-Auth-User-Id"] = self.loginData["UserID"]
@@ -22,8 +22,8 @@ class Client(object):
 
     def _post(self, url, params=None, data=None):
         headers = {
-            "X-Auth-User-Id": 0,
-            "X-Auth-Session-Key": 0
+            "X-Auth-User-Id": "0",
+            "X-Auth-Session-Key": "0"
         }
         if hasattr(self, 'loginData'):
             headers["X-Auth-User-Id"] = self.loginData["UserID"]
@@ -35,9 +35,11 @@ class Client(object):
             "Username": user,
             "Hash": md5("{0}-{1}".format(user, md5(password)))
         }
-        r = self._post(self.opts["url"] + "Login.json", data=form)
+        r = self._post(self.base_url + "/Login.json", data=form)
         if r.status_code == requests.codes.ok:
             self.loginData = j = r.json()
+            self.loginData["UserID"] = str(j["UserID"])
+            self.loginData["SessionKey"] = str(j["SessionKey"])
             if len(j["Notifications"]):
                 six.print_("User has a new notifications: "+", ".join(j["Notifications"]))
             del self.loginData["Status"]
