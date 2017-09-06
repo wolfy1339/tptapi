@@ -16,7 +16,7 @@ Login
 ~~~~~
 
 Most actions need a session token you can obtain from Login:
-``client.login(user, passwd);`` returns a boolean.
+``client.login(user, password)`` returns a boolean.
 
 Check Login
 ~~~~~~~~~~~
@@ -101,14 +101,26 @@ Save [LOGIN NEEDED]
 ~~~~~~~~~~~~~~~~~~~
 
 Saves a CPS file. Data has to be OPS1-encoded save.
-``client.save(name, description, data)``. Returns save id.
+
+.. code:: python
+
+    data = open("save.cps", "br").read()
+    client.save(name, description, data)``
+
+Returns the save id.
 
 Update Save [LOGIN NEEDED]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Updates a save with new description and content. Data has to be
-OPS1-encoded save. ``client.updateSave(id, description, data)``. Returns
-a boolean.
+OPS1-encoded save.
+
+.. code:: python
+
+    data = open("save.cps", "br").read()
+    client.updateSave(id, description, data
+
+Returns a boolean.
 
 Startup Data [LOGIN ENHACES OUTPUT]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
