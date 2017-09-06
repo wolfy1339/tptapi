@@ -12,16 +12,14 @@ class Client(object):
         self.session = requests.Session()
 
     def _get(self, url, params=None):
-        headers = {
-            "X-Auth-User-Id": "0",
-            "X-Auth-Session-Key": "0"
-        }
-        if hasattr(self, 'loginData'):
-            headers["X-Auth-User-Id"] = self.loginData["UserID"]
-            headers["X-Auth-Session-Key"] = self.loginData["SessionKey"]
+        headers = self._headers()
         return self.session.get(url, params=params, headers=headers)
 
     def _post(self, url, params=None, data=None):
+        headers = self._headers()
+        return self.session.post(url, params=params, data=data, headers=headers)
+
+    def _headers(self):
         headers = {
             "X-Auth-User-Id": "0",
             "X-Auth-Session-Key": "0"
@@ -29,7 +27,7 @@ class Client(object):
         if hasattr(self, 'loginData'):
             headers["X-Auth-User-Id"] = self.loginData["UserID"]
             headers["X-Auth-Session-Key"] = self.loginData["SessionKey"]
-        return self.session.post(url, params=params, data=data, headers=headers)
+        return headers
 
     def login(self, user, password):
         """Client.login(user, password)
