@@ -105,7 +105,7 @@ Saves a CPS file. Data has to be OPS1-encoded save.
 .. code:: python
 
     data = open("save.cps", "br").read()
-    client.save(name, description, data)``
+    client.save(name, description, data)
 
 Returns the save id.
 
@@ -118,7 +118,7 @@ OPS1-encoded save.
 .. code:: python
 
     data = open("save.cps", "br").read()
-    client.updateSave(id, description, data
+    client.updateSave(id, description, data)
 
 Returns a boolean.
 

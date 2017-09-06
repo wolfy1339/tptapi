@@ -31,6 +31,8 @@ class Client(object):
         return requests.post(url, params=params, data=data, headers=headers)
 
     def login(self, user, password):
+        """Client.login(user, password)
+        Initiates a login with the website. Returns a boolean"""
         form = {
             "Username": user,
             "Hash": md5("{0}-{1}".format(user, md5(password)))
@@ -49,10 +51,15 @@ class Client(object):
         return r.status_code == requests.codes.ok
 
     def checkLogin(self):
+        """Checks if your login is valid"""
         r = self._get(self.base_url + "/Login.json").json()
         return r["Status"] == 1
 
     def vote(self, ID, action):
+        """Used to cast a vote on a save, you need to do Client.vote(id, type)
+        where type is a negative or positive number that defines if it's
+        an upvote or a downvote.
+        Returns a boolean."""
         # action can be -1 or +1
         form = {
             "ID": int(ID),
@@ -62,6 +69,8 @@ class Client(object):
         return r.text() == "OK"
 
     def comment(self, ID, content):
+        """Posts a comment on specified save ID.
+        Returns a boolean"""
         form = {
             "Comment": content
         }
@@ -70,6 +79,8 @@ class Client(object):
         return r.status_code == requests.codes.ok
 
     def addTag(self, ID, tag):
+        """Adds a tag to a specified save ID.
+        Returns a boolean"""
         qs = {
             "ID": ID,
             "Tag": tag,
@@ -80,6 +91,8 @@ class Client(object):
         return r.status_code == requests.codes.ok
 
     def delTag(self, ID, tag):
+        """Removes a tag from a specified save ID
+        Returns a boolean"""
         qs = {
             "ID": ID,
             "Tag": tag,
@@ -90,6 +103,8 @@ class Client(object):
         return r.status
 
     def delSave(self, ID):
+        """Deletes a specified save ID
+        Returns a boolean"""
         qs = {
             "ID": ID,
             "Mode": "Delete",
@@ -99,6 +114,8 @@ class Client(object):
         return r.status_code == requests.codes.ok
 
     def unpublishSave(self, ID):
+        """Unpublishes a specified save ID
+        Returns a boolean"""
         qs = {
             "ID": ID,
             "Mode": "Unpublish",
@@ -107,7 +124,9 @@ class Client(object):
         r = self._get(self.base_url + "/Browse/Delete.json", params=qs)
         return r.status_code == requests.codes.ok
 
-    def publishSave(self, ID, content):
+    def publishSave(self, ID):
+        """Makes a specified save public
+        Returns a boolean"""
         form = {
             "ActionPublish": 1
         }
@@ -119,11 +138,24 @@ class Client(object):
         return r.text() == "1"
 
     def setProfile(self, p):
+        """Updates your profile
+        {
+            "location": <string>,
+            "biography": <string>,
+            "DOB": <date in the format DD-MM-YYY>,
+            "Email:" <email>,
+            "ConfirmPassword": <password if changing email>,
+            "Website": <URL string>,
+            "BetaEnroll": <1 for yes, 0 for no>,
+            "WYSIWYG": <1 for yes, 0 for no>,
+            "EditUser": "Save"
+        }"""
         # action can be -1 or +1
         r = self._post(self.base_url + "/Profile.json", data=p)
         return r.text() == "OK"
 
-    def browse(self, query, count,start):
+    def browse(self, query, count, start):
+        """Browse saves with given query"""
         qs = {
             "Start": start,
             "Count": count,
@@ -133,6 +165,7 @@ class Client(object):
         return r.json()
 
     def listTags(self, c, s):
+        """Returns a list of tags"""
         qs = {
             "Start": s,
             "Count": c
@@ -141,6 +174,7 @@ class Client(object):
         return r.json()["Tags"]
 
     def fav(self, ID):
+        """Favourite a save"""
         qs = {
             "ID": ID,
             "Key": self.loginData.SessionKey
@@ -149,6 +183,7 @@ class Client(object):
         return r.status_code == requests.codes.ok
 
     def remfav(self, ID):
+        """Remove a save from your favourites"""
         qs = {
               "ID": ID,
               "Key": self.loginData.SessionKey,
@@ -158,6 +193,7 @@ class Client(object):
         return r.status_code == requests.codes.ok
 
     def save(self, name, desc, data):
+        """Upload a save to the website"""
         # action can be -1 or +1
         form = {
             "Name": name,
