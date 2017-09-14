@@ -3,7 +3,12 @@ python-targets:
   - 3
 pep8:
   full: true
+  disable:
+      - N803
 strictness: veryhigh
+pylint:
+  disable:
+    - invalid-name
 pyflakes:
   disable:
     - F401

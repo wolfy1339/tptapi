@@ -1,5 +1,6 @@
 from setuptools import setup, find_packages
-from sys import version_info, exit, stderr
+from sys import version_info, stderr
+from sys import exit as _exit
 
 with open("README.rst") as f:
     long_description = f.read().replace("\r", "")
@@ -7,7 +8,7 @@ with open("README.rst") as f:
 if version_info < (2, 7, 0) or (version_info[0] == 3 and
                                 version_info < (3, 3, 0)):
     stderr.write('tptapi requires Python 2.7 or 3.3 and higher')
-    exit(-1)
+    _exit(-1)
 
 setup(name='tptapi',
       version='1.0.0',

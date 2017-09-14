@@ -12,6 +12,7 @@ class Client(object):
     def __init__(self):
         self.base_url = "http://powdertoy.co.uk"
         self.session = requests.Session()
+        self.loginData = {}
 
     def _get(self, url, params=None):
         headers = self._headers()
@@ -29,7 +30,7 @@ class Client(object):
             "X-Auth-User-Id": "0",
             "X-Auth-Session-Key": "0"
         }
-        if hasattr(self, 'loginData'):
+        if len(self.loginData):
             headers["X-Auth-User-Id"] = self.loginData["UserID"]
             headers["X-Auth-Session-Key"] = self.loginData["SessionKey"]
         return headers
@@ -43,7 +44,8 @@ class Client(object):
         }
         r = self._post(self.base_url + "/Login.json", data=form)
         if r.json()['Status'] == 1:
-            self.loginData = j = r.json()
+            self.loginData.update(r.json())
+            j = r.json()
             self.loginData["UserID"] = str(j["UserID"])
             self.loginData["SessionKey"] = str(j["SessionKey"])
             if len(j["Notifications"]):
