@@ -3,8 +3,10 @@ import six
 import hashlib
 from . import errors
 
+
 def md5(data):
     return hashlib.md5(data.encode("utf-8")).hexdigest()
+
 
 class Client(object):
     def __init__(self):
@@ -17,7 +19,10 @@ class Client(object):
 
     def _post(self, url, params=None, data=None):
         headers = self._headers()
-        return self.session.post(url, params=params, data=data, headers=headers)
+        return self.session.post(url,
+                                 params=params,
+                                 data=data,
+                                 headers=headers)
 
     def _headers(self):
         headers = {
@@ -42,14 +47,15 @@ class Client(object):
             self.loginData["UserID"] = str(j["UserID"])
             self.loginData["SessionKey"] = str(j["SessionKey"])
             if len(j["Notifications"]):
-                six.print_("User has a new notifications: "+", ".join(j["Notifications"]))
+                notif = ", ".join(j["Notifications"])
+                six.print_("User has a new notifications: {0!s}".format(notif))
             del self.loginData["Status"]
             del self.loginData["Notifications"]
         else:
             raise errors.InvalidLogin("There was a problem logging you in.")
         return r.json()['Status'] == 1
 
-    def checkLogin(self):
+    def check_login(self):
         """Checks if your login is valid"""
         r = self._get(self.base_url + "/Login.json").json()
         return r["Status"] == 1
@@ -74,12 +80,14 @@ class Client(object):
             "Comment": content
         }
         qs = {"ID": ID}
-        r = self._post(self.base_url + "/Browse/Comments.json", data=form, params=qs)
+        r = self._post(self.base_url + "/Browse/Comments.json",
+                       data=form,
+                       params=qs)
         if r.json["Status"] == 0:
             raise errors.InvalidLogin("You are not logged in.")
         return r.json['Status'] == 1
 
-    def addTag(self, ID, tag):
+    def add_tag(self, ID, tag):
         """Adds a tag to a specified save ID.
         Returns a boolean"""
         qs = {
@@ -91,7 +99,7 @@ class Client(object):
         r = self._get(self.base_url + "/Browse/EditTag.json", params=qs)
         return r.status_code == requests.codes.ok
 
-    def delTag(self, ID, tag):
+    def delete_tag(self, ID, tag):
         """Removes a tag from a specified save ID
         Returns a boolean"""
         qs = {
@@ -103,7 +111,7 @@ class Client(object):
         r = self._get(self.base_url + "/Browse/EditTag.json", params=qs)
         return r.status
 
-    def delSave(self, ID):
+    def delete_save(self, ID):
         """Deletes a specified save ID
         Returns a boolean"""
         qs = {
@@ -114,7 +122,7 @@ class Client(object):
         r = self._get(self.base_url + "/Browse/Delete.json", params=qs)
         return r.status_code == requests.codes.ok
 
-    def unpublishSave(self, ID):
+    def unpublish_save(self, ID):
         """Unpublishes a specified save ID
         Returns a boolean"""
         qs = {
@@ -125,7 +133,7 @@ class Client(object):
         r = self._get(self.base_url + "/Browse/Delete.json", params=qs)
         return r.status_code == requests.codes.ok
 
-    def publishSave(self, ID):
+    def publish_save(self, ID):
         """Makes a specified save public
         Returns a boolean"""
         form = {
@@ -135,10 +143,12 @@ class Client(object):
             "ID": ID,
             "Key": self.loginData["SessionKey"]
         }
-        r = self._post(self.base_url + "/Browse/View.json", data=form, params=qs)
+        r = self._post(self.base_url + "/Browse/View.json",
+                       data=form,
+                       params=qs)
         return r.text() == "1"
 
-    def setProfile(self, p):
+    def set_profile(self, p):
         """Updates your profile
         {
             "location": <string>,
@@ -165,7 +175,7 @@ class Client(object):
         r = self._get(self.base_url + "/Browse.json", params=qs)
         return r.json()
 
-    def listTags(self, c, s):
+    def list_tags(self, c, s):
         """Returns a list of tags"""
         qs = {
             "Start": s,
@@ -174,7 +184,7 @@ class Client(object):
         r = self._get(self.base_url + "/Browse/Tags.json", params=qs)
         return r.json()["Tags"]
 
-    def fav(self, ID):
+    def add_fav(self, ID):
         """Favourite a save"""
         qs = {
             "ID": ID,
@@ -183,7 +193,7 @@ class Client(object):
         r = self._get(self.base_url + "/Browse/Favourite.json", params=qs)
         return r.status_code == requests.codes.ok
 
-    def remfav(self, ID):
+    def remove_fav(self, ID):
         """Remove a save from your favourites"""
         qs = {
               "ID": ID,
@@ -205,7 +215,7 @@ class Client(object):
         if r.text().split(" ")[0] == "OK":
             return r.text().split(" ")[1]
 
-    def updateSave(self, ID, data, desc):
+    def update_save(self, ID, data, desc):
         # action can be -1 or +1
         form = {
             "ID": int(ID),
@@ -215,7 +225,7 @@ class Client(object):
         r = self._post(self.base_url + "/Vote.api", data=form)
         return r.text() == "OK"
 
-    def saveData(self, ID):
+    def save_data(self, ID):
         qs = {"ID": ID}
         r = self._get(self.base_url + "/Browse/View.json", params=qs)
         return r.json()

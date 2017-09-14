@@ -24,7 +24,7 @@ Check Login
 ~~~~~~~~~~~
 
 To verify that your session is still valid you can run checkLogin:
-``client.checkLogin()`` which will return a boolean.
+``client.check_loginLogin()`` which will return a boolean.
 
 Vote [LOGIN NEEDED]
 ~~~~~~~~~~~~~~~~~~~
@@ -42,37 +42,37 @@ boolean.
 Add Tag [LOGIN NEEDED]
 ~~~~~~~~~~~~~~~~~~~~~~
 
-To add a tag, you need to do ``client.addTag(id, name)``. Returns a
+To add a tag, you need to do ``client.add_tag(id, name)``. Returns a
 boolean.
 
 Delete Tag [LOGIN NEEDED]
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To remove a tag, you need to do ``client.delTag(id, name)``. Returns a
+To remove a tag, you need to do ``client.delete_tag(id, name)``. Returns a
 boolean.
 
 Delete Save [LOGIN NEEDED]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To remove a save, you need to do ``client.delSave(id)``. Returns a
+To remove a save, you need to do ``client.delete_save(id)``. Returns a
 boolean.
 
 Unpublish Save [LOGIN NEEDED]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To unpublish a save, you need to do ``client.unpublishTag(id)``. Returns
+To unpublish a save, you need to do ``client.unpublish_tag(id)``. Returns
 a boolean.
 
 Publish Save [LOGIN NEEDED]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To publish a save, you need to do ``client.publishSave(id)``. Returns a
+To publish a save, you need to do ``client.publish_save(id)``. Returns a
 boolean.
 
 Update Profile [LOGIN NEEDED]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To update your profile, you need to do ``client.setProfile(data)``.
+To update your profile, you need to do ``client.set_profile(data)``.
 Returns a boolean.
 
 Browse [LOGIN ENHACES OUTPUT]
@@ -84,19 +84,19 @@ Returns results.
 List Tags
 ~~~~~~~~~
 
-To list tags, you need to do ``client.listTags(start, count)``. Returns
+To list tags, you need to do ``client.list_tags(start, count)``. Returns
 array of tags.
 
 Favourite a Save [LOGIN NEEDED]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To add a save to favutrites, you need to do ``client.fav(id)``. Returns
+To add a save to favutrites, you need to do ``client.add_fav(id)``. Returns
 a boolean.
 
 UnFavourite a Save [LOGIN NEEDED]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To remove a save from favutrites, you need to do ``client.remFav(id)``.
+To remove a save from favutrites, you need to do ``client.remove_fav(id)``.
 Returns a boolean.
 
 Save [LOGIN NEEDED]
@@ -136,6 +136,6 @@ Returns a save's comments. ``client.comments(id, count, offset)``
 
 .. |BCH compliance| image:: https://bettercodehub.com/edge/badge/wolfy1339/tptapi?branch=master
    :target: https://bettercodehub.com/
-   
+
 .. |Codacy| image:: https://api.codacy.com/project/badge/Grade/6fc2b55ae1c14858a0bdf4639ebe69fc
    :target: https://www.codacy.com/app/wolfy1339/tptapi?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=wolfy1339/tptapi&amp;utm_campaign=Badge_Grade
