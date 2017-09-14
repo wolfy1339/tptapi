@@ -196,9 +196,9 @@ class Client(object):
     def remove_fav(self, ID):
         """Remove a save from your favourites"""
         qs = {
-              "ID": ID,
-              "Key": self.loginData["SessionKey"],
-              "Mode": "Remove"
+            "ID": ID,
+            "Key": self.loginData["SessionKey"],
+            "Mode": "Remove"
         }
         r = self._get(self.base_url + "/Browse/Tags.json", params=qs)
         return r.status_code == requests.codes.ok
