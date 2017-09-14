@@ -1,5 +1,7 @@
 TPTAPI
 ======
+|BCH compliance| |Codacy|
+
 
 This package interacts with `The Powder Toy <http://powdertoy.co.uk>`__'s API.
 
@@ -131,3 +133,9 @@ Save's Comments
 ~~~~~~~~~~~~~~~
 
 Returns a save's comments. ``client.comments(id, count, offset)``
+
+.. |BCH compliance| image:: https://bettercodehub.com/edge/badge/wolfy1339/tptapi?branch=master
+   :target: https://bettercodehub.com/
+   
+.. |Codacy| image:: https://api.codacy.com/project/badge/Grade/6fc2b55ae1c14858a0bdf4639ebe69fc
+   :target: https://www.codacy.com/app/wolfy1339/tptapi?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=wolfy1339/tptapi&amp;utm_campaign=Badge_Grade
