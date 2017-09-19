@@ -19,11 +19,13 @@ class Client(object):
         return self.session.get(url, params=params, headers=headers)
 
     def _post(self, url, params=None, data=None):
-        headers = self._headers()
         return self.session.post(url,
                                  params=params,
                                  data=data,
-                                 headers=headers)
+                                 headers=self._headers())
+
+    _get.__doc__ = requests.get.__doc__
+    _post.__doc__ = requests.post.__doc__
 
     def _headers(self):
         headers = {
@@ -78,13 +80,9 @@ class Client(object):
     def comment(self, ID, content):
         """Posts a comment on specified save ID.
         Returns a boolean"""
-        form = {
-            "Comment": content
-        }
-        qs = {"ID": ID}
         r = self._post(self.base_url + "/Browse/Comments.json",
-                       data=form,
-                       params=qs)
+                       data={"Comment": content},
+                       params={"ID": ID})
         if r.json["Status"] == 0:
             raise errors.InvalidLogin("You are not logged in.")
         return r.json['Status'] == 1
@@ -138,16 +136,9 @@ class Client(object):
     def publish_save(self, ID):
         """Makes a specified save public
         Returns a boolean"""
-        form = {
-            "ActionPublish": 1
-        }
-        qs = {
-            "ID": ID,
-            "Key": self.loginData["SessionKey"]
-        }
         r = self._post(self.base_url + "/Browse/View.json",
-                       data=form,
-                       params=qs)
+                       data={"ActionPublish": 1},
+                       params={"ID": ID, "Key": self.loginData["SessionKey"]})
         return r.text() == "1"
 
     def set_profile(self, p):
@@ -213,29 +204,32 @@ class Client(object):
             "Description": desc,
             "Data": data
         }
-        r = self._post(self.base_url + "/Save.api", data=form)
-        if r.text().split(" ")[0] == "OK":
-            return r.text().split(" ")[1]
+        r = self._post(self.base_url + "/Save.api", data=form).text()
+        if r.split(" ")[0] == "OK":
+            return r.split(" ")[1]
 
     def update_save(self, ID, data, desc):
+        """Update a save's metadata"""
         # action can be -1 or +1
         form = {
             "ID": int(ID),
             "Description": desc,
             "Data": data
         }
-        r = self._post(self.base_url + "/Vote.api", data=form)
+        r = self._post(self.base_url + "/Save.api", data=form)
         return r.text() == "OK"
 
     def save_data(self, ID):
-        qs = {"ID": ID}
-        r = self._get(self.base_url + "/Browse/View.json", params=qs)
+        """Get JSON data on a specified save"""
+        r = self._get(self.base_url + "/Browse/View.json", params={"ID": ID})
         return r.json()
 
     def startup(self):
+        """Get startup.json contents"""
         return self._get(self.base_url + "/Startup.json").json()
 
     def comments(self, ID, count, start):
+        """Get comments on a particular save"""
         qs = {
             "Start": start,
             "Count": count,
