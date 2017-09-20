@@ -15,17 +15,30 @@ class Client(object):
         self.loginData = {}
 
     def _get(self, url, params=None):
+        """Sends a GET request.
+
+        :param url: URL for the new :class:`Request` object.
+        :param params: (optional) Dictionary or bytes to be sent in the query string for the :class:`Request`.
+        :return: :class:`Response <Response>` object
+        :rtype: requests.Response
+        """
         headers = self._headers()
         return self.session.get(url, params=params, headers=headers)
 
     def _post(self, url, params=None, data=None):
+        """ Sends a POST request.
+
+        :param url: URL for the new :class:`Request` object.
+        :param params: (optional) Dictionary or bytes to be sent in the query string for the :class:`Request`.
+        :param data: (optional) Dictionary (will be form-encoded), bytes, or file-like object to send in the body of the :class:`Request`.
+        :return: :class:`Response <Response>` object
+        :rtype: requests.Response
+        """
         return self.session.post(url,
                                  params=params,
                                  data=data,
                                  headers=self._headers())
 
-    _get.__doc__ = requests.get.__doc__
-    _post.__doc__ = requests.post.__doc__
 
     def _headers(self):
         headers = {
@@ -38,8 +51,13 @@ class Client(object):
         return headers
 
     def login(self, user, password):
-        """Client.login(user, password)
-        Initiates a login with the website. Returns a boolean"""
+        """Initiates a login with the website. Returns a boolean
+
+        :param user: Username used to login to The Powder Toy's website.
+        :param password: password used to login to The Powder Toy's website.
+        :return: :class:`bool` bool
+        :rtype: bool
+        """
         form = {
             "Username": user,
             "Hash": md5("{0}-{1}".format(user, md5(password)))
@@ -60,15 +78,29 @@ class Client(object):
         return r.json()['Status'] == 1
 
     def check_login(self):
-        """Checks if your login is valid"""
+        """Checks if your login is valid
+
+        >>> import tptapi
+        >>> client = tptapi.Client()
+        >>> client.check_login()
+
+        :return: :class:`bool` bool
+        :rtype: bool
+        """
         r = self._get(self.base_url + "/Login.json").json()
         return r["Status"] == 1
 
     def vote(self, ID, action):
-        """Used to cast a vote on a save, you need to do Client.vote(id, type)
-        where type is a negative or positive number that defines if it's
-        an upvote or a downvote.
-        Returns a boolean."""
+        """Used to cast a vote on a save.
+
+        >>> import tptapi
+        >>> client = tptapi.Client()
+        >>> client.vote(id, action)
+
+        :param action: Integer. Upvote or Downvote a save.
+        :return: :class:`bool` bool
+        :rtype: bool
+        """
         # action can be -1 or +1
         form = {
             "ID": int(ID),
@@ -79,7 +111,11 @@ class Client(object):
 
     def comment(self, ID, content):
         """Posts a comment on specified save ID.
-        Returns a boolean"""
+
+        :param ID: Integer. The save number you want to post a comment on.
+        :return: :class:`bool` bool
+        :rtype: bool
+        """
         r = self._post(self.base_url + "/Browse/Comments.json",
                        data={"Comment": content},
                        params={"ID": ID})
@@ -89,7 +125,12 @@ class Client(object):
 
     def add_tag(self, ID, tag):
         """Adds a tag to a specified save ID.
-        Returns a boolean"""
+
+        :param ID: Integer. The save number you wish to add a tag to.
+        :param tag: String. The tag you wish to add to the specified save.
+        :return: :class:`bool`
+        :rtype: bool
+        """
         qs = {
             "ID": ID,
             "Tag": tag,
@@ -101,7 +142,10 @@ class Client(object):
 
     def delete_tag(self, ID, tag):
         """Removes a tag from a specified save ID
-        Returns a boolean"""
+
+        :return: :class:`bool`
+        :rtype: bool
+        """
         qs = {
             "ID": ID,
             "Tag": tag,
@@ -113,7 +157,10 @@ class Client(object):
 
     def delete_save(self, ID):
         """Deletes a specified save ID
-        Returns a boolean"""
+
+        :return: :class:`bool`
+        :rtype: bool
+        """
         qs = {
             "ID": ID,
             "Mode": "Delete",
@@ -124,7 +171,10 @@ class Client(object):
 
     def unpublish_save(self, ID):
         """Unpublishes a specified save ID
-        Returns a boolean"""
+
+        :return: :class:`bool`
+        :rtype: bool
+        """
         qs = {
             "ID": ID,
             "Mode": "Unpublish",
@@ -135,7 +185,10 @@ class Client(object):
 
     def publish_save(self, ID):
         """Makes a specified save public
-        Returns a boolean"""
+
+        :return: :class:`bool`
+        :rtype: bool
+        """
         r = self._post(self.base_url + "/Browse/View.json",
                        data={"ActionPublish": 1},
                        params={"ID": ID, "Key": self.loginData["SessionKey"]})
@@ -143,23 +196,20 @@ class Client(object):
 
     def set_profile(self, p):
         """Updates your profile
-        {
-            "location": <string>,
-            "biography": <string>,
-            "DOB": <date in the format DD-MM-YYY>,
-            "Email:" <email>,
-            "ConfirmPassword": <password if changing email>,
-            "Website": <URL string>,
-            "BetaEnroll": <1 for yes, 0 for no>,
-            "WYSIWYG": <1 for yes, 0 for no>,
-            "EditUser": "Save"
-        }"""
+
+        :return: :class:`bool`
+        :rtype: bool
+        """
         # action can be -1 or +1
         r = self._post(self.base_url + "/Profile.json", data=p)
         return r.text() == "OK"
 
     def browse(self, query, count, start):
-        """Browse saves with given query"""
+        """Browse saves with given query.
+
+        :return: :class:`dict`
+        :rtype: dict
+        """
         qs = {
             "Start": start,
             "Count": count,
@@ -169,7 +219,11 @@ class Client(object):
         return r.json()
 
     def list_tags(self, c, s):
-        """Returns a list of tags"""
+        """Returns a list of tags.
+
+        :return: :class:`list` object
+        :rtype: list
+        """
         qs = {
             "Start": s,
             "Count": c
@@ -178,7 +232,11 @@ class Client(object):
         return r.json()["Tags"]
 
     def add_fav(self, ID):
-        """Favourite a save"""
+        """Add a save to your favourites.
+
+        :return: :class:`bool`
+        :rtype: bool
+        """
         qs = {
             "ID": ID,
             "Key": self.loginData["SessionKey"]
@@ -187,7 +245,11 @@ class Client(object):
         return r.status_code == requests.codes.ok
 
     def remove_fav(self, ID):
-        """Remove a save from your favourites"""
+        """Remove a save from your favourites.
+
+        :return: :class:`bool`
+        :rtype: bool
+        """
         qs = {
             "ID": ID,
             "Key": self.loginData["SessionKey"],
@@ -197,7 +259,11 @@ class Client(object):
         return r.status_code == requests.codes.ok
 
     def save(self, name, desc, data):
-        """Upload a save to the website"""
+        """Upload a save to the website.
+
+        :return: :class:`int`
+        :rtype: int
+        """
         # action can be -1 or +1
         form = {
             "Name": name,
@@ -209,7 +275,11 @@ class Client(object):
             return r.split(" ")[1]
 
     def update_save(self, ID, data, desc):
-        """Update a save's metadata"""
+        """Update a save's metadata.
+
+        :return: :class:`bool`
+        :rtype: bool
+        """
         # action can be -1 or +1
         form = {
             "ID": int(ID),
@@ -220,16 +290,28 @@ class Client(object):
         return r.text() == "OK"
 
     def save_data(self, ID):
-        """Get JSON data on a specified save"""
+        """Get JSON data on a specified save.
+
+        :return: :class:`dict`
+        :rtype: dict
+        """
         r = self._get(self.base_url + "/Browse/View.json", params={"ID": ID})
         return r.json()
 
     def startup(self):
-        """Get startup.json contents"""
+        """Get startup.json contents.
+
+        :return: :class:`dict`
+        :rtype: dict
+        """
         return self._get(self.base_url + "/Startup.json").json()
 
     def comments(self, ID, count, start):
-        """Get comments on a particular save"""
+        """Get comments on a particular save
+
+        :return: :class:`dict` object
+        :rtype: dict
+        """
         qs = {
             "Start": start,
             "Count": count,
