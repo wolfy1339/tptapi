@@ -10,14 +10,18 @@ if version_info < (2, 7, 0) or (version_info[0] == 3 and
     stderr.write('tptapi requires Python 2.7 or 3.3 and higher')
     _exit(-1)
 
+here = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(here, 'tptapi', '__version__.py'), 'r', 'utf-8') as f:
+    exec(f.read(), about)
+
 setup(name='tptapi',
-      version='1.0.0',
-      description='A Python client to interact with powdertoy.co.uk',
+      version=about["__version__"],
+      description=about['__description__'],
       long_description=long_description,
-      url='https://github.com/wolfy1339/tptapi',
+      url=about['__url__'],
       author='wolfy1339',
       author_email='webmaster@wolfy1339.com',
-      license='MIT',
+      license=about['__license__'],
       packages=find_packages(),
       install_requires=['six>=1.10.0', 'requests>=2.12.4'],
       include_package_data=True,
