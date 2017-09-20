@@ -1,6 +1,7 @@
 from setuptools import setup, find_packages
 from sys import version_info, stderr
 from sys import exit as _exit
+import os
 
 with open("README.rst") as f:
     long_description = f.read().replace("\r", "")
@@ -11,7 +12,8 @@ if version_info < (2, 7, 0) or (version_info[0] == 3 and
     _exit(-1)
 
 here = os.path.abspath(os.path.dirname(__file__))
-with open(os.path.join(here, 'tptapi', '__version__.py'), 'r', 'utf-8') as f:
+about = {}
+with open(os.path.join(here, 'tptapi', '__version__.py'), 'r') as f:
     exec(f.read(), about)
 
 setup(name='tptapi',
