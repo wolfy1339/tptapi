@@ -24,7 +24,7 @@ Check Login
 ~~~~~~~~~~~
 
 To verify that your session is still valid you can run checkLogin:
-``client.check_loginLogin()`` which will return a boolean.
+``client.check_login()`` which will return a boolean.
 
 Vote [LOGIN NEEDED]
 ~~~~~~~~~~~~~~~~~~~
