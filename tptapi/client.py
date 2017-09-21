@@ -18,7 +18,7 @@ class Client(object):
     def __init__(self):
         self.base_url = "http://powdertoy.co.uk"
         self.session = requests.Session()
-        self.loginData = {}
+        self.session.headers.update(self._headers())
 
     def _get(self, url, params=None):
         """Sends a GET request.
@@ -29,8 +29,7 @@ class Client(object):
         :return: :class:`Response <Response>` object
         :rtype: requests.Response
         """
-        headers = self._headers()
-        return self.session.get(url, params=params, headers=headers)
+        return self.session.get(url, params=params)
 
     def _post(self, url, params=None, data=None):
         """Sends a POST request.
@@ -43,20 +42,15 @@ class Client(object):
         :return: :class:`Response <Response>` object
         :rtype: requests.Response
         """
-        return self.session.post(url,
-                                 params=params,
-                                 data=data,
-                                 headers=self._headers())
+        return self.session.post(url, params=params, data=data)
 
     def _headers(self):
         """Returns common headers for all requests (GET & POST) to the API"""
         headers = {
             "X-Auth-User-Id": "0",
-            "X-Auth-Session-Key": "0"
+            "X-Auth-Session-Key": "0",
         }
-        if len(self.loginData):
-            headers["X-Auth-User-Id"] = self.loginData["UserID"]
-            headers["X-Auth-Session-Key"] = self.loginData["SessionKey"]
+
         return headers
 
     def login(self, user, password):
@@ -72,19 +66,17 @@ class Client(object):
             "Hash": md5("{0}-{1}".format(user, md5(password)))
         }
         r = self._post(self.base_url + "/Login.json", data=form)
-        if r.json()['Status'] == 1:
-            self.loginData.update(r.json())
-            j = r.json()
-            self.loginData["UserID"] = str(j["UserID"])
-            self.loginData["SessionKey"] = str(j["SessionKey"])
+        j = r.json()
+        status_ok = j['Status'] == 1
+        if status_ok:
+            self.session.headers["X-Auth-User-Id"] = str(j["UserID"])
+            self.session.headers["X-Auth-Session-Key"] = str(j["SessionKey"])
             if len(j["Notifications"]):
                 notif = ", ".join(j["Notifications"])
                 six.print_("User has a new notifications: {0!s}".format(notif))
-            del self.loginData["Status"]
-            del self.loginData["Notifications"]
         else:
             raise errors.InvalidLogin("There was a problem logging you in.")
-        return r.json()['Status'] == 1
+        return status_ok
 
     def check_login(self):
         """Checks if your login is valid
