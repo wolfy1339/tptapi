@@ -5,6 +5,12 @@ from . import errors
 
 
 def md5(data):
+    """Returns the string hashed with MD5
+
+    :param data: String that you want hashed with md5
+    :return: :class:`str`
+    :rtype: str
+    """
     return hashlib.md5(data.encode("utf-8")).hexdigest()
 
 
@@ -18,7 +24,8 @@ class Client(object):
         """Sends a GET request.
 
         :param url: URL for the new :class:`Request` object.
-        :param params: (optional) Dictionary or bytes to be sent in the query string for the :class:`Request`.
+        :param params: (optional) Dictionary or bytes to be sent in the query
+            string for the :class:`Request`.
         :return: :class:`Response <Response>` object
         :rtype: requests.Response
         """
@@ -26,11 +33,13 @@ class Client(object):
         return self.session.get(url, params=params, headers=headers)
 
     def _post(self, url, params=None, data=None):
-        """ Sends a POST request.
+        """Sends a POST request.
 
         :param url: URL for the new :class:`Request` object.
-        :param params: (optional) Dictionary or bytes to be sent in the query string for the :class:`Request`.
-        :param data: (optional) Dictionary (will be form-encoded), bytes, or file-like object to send in the body of the :class:`Request`.
+        :param params: (optional) Dictionary or bytes to be sent in the query
+            string for the :class:`Request`.
+        :param data: (optional) Dictionary (will be form-encoded), bytes,
+            or file-like object to send in the body of the :class:`Request`.
         :return: :class:`Response <Response>` object
         :rtype: requests.Response
         """
@@ -39,8 +48,8 @@ class Client(object):
                                  data=data,
                                  headers=self._headers())
 
-
     def _headers(self):
+        """Returns common headers for all requests (GET & POST) to the API"""
         headers = {
             "X-Auth-User-Id": "0",
             "X-Auth-Session-Key": "0"
