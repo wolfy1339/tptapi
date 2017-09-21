@@ -49,6 +49,7 @@ class Client(object):
         headers = {
             "X-Auth-User-Id": "0",
             "X-Auth-Session-Key": "0",
+            "User-Agent": "PowderToy/92.2 (WIN32; SSE3; M0) TPTPP/92.2.333R.0"
         }
 
         return headers
