@@ -206,7 +206,7 @@ class Client(object):
         r = self._post(self.base_url + "/Profile.json", data=p)
         return r.text() == "OK"
 
-    def browse(self, query, count, start):
+    def browse(self, query=None, count=20, start=0):
         """Browse saves with given query.
 
         :return: :class:`dict`
@@ -220,15 +220,15 @@ class Client(object):
         r = self._get(self.base_url + "/Browse.json", params=qs)
         return r.json()
 
-    def list_tags(self, c, s):
+    def list_tags(self, count=24, start=0):
         """Returns a list of tags.
 
         :return: :class:`list` object
         :rtype: list
         """
         qs = {
-            "Start": s,
-            "Count": c
+            "Start": start,
+            "Count": count
         }
         r = self._get(self.base_url + "/Browse/Tags.json", params=qs)
         return r.json()["Tags"]
