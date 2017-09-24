@@ -137,7 +137,7 @@ class Client(object):
             "ID": ID,
             "Tag": tag,
             "Op": "add",
-            "Key": self.loginData['SessionKey']
+            "Key": self.session.headers["X-Auth-Session-Key"]
         }
         r = self._get(self.base_url + "/Browse/EditTag.json", params=qs)
         return r.status_code == requests.codes.ok
@@ -152,7 +152,7 @@ class Client(object):
             "ID": ID,
             "Tag": tag,
             "Op": "delete",
-            "Key": self.loginData['SessionKey']
+            "Key": self.session.headers["X-Auth-Session-Key"]
         }
         r = self._get(self.base_url + "/Browse/EditTag.json", params=qs)
         return r.status
@@ -166,7 +166,7 @@ class Client(object):
         qs = {
             "ID": ID,
             "Mode": "Delete",
-            "Key": self.loginData['SessionKey']
+            "Key": self.session.headers["X-Auth-Session-Key"]
         }
         r = self._get(self.base_url + "/Browse/Delete.json", params=qs)
         return r.status_code == requests.codes.ok
@@ -180,7 +180,7 @@ class Client(object):
         qs = {
             "ID": ID,
             "Mode": "Unpublish",
-            "Key": self.loginData['SessionKey']
+            "Key": self.session.headers["X-Auth-Session-Key"]
         }
         r = self._get(self.base_url + "/Browse/Delete.json", params=qs)
         return r.status_code == requests.codes.ok
@@ -193,7 +193,7 @@ class Client(object):
         """
         r = self._post(self.base_url + "/Browse/View.json",
                        data={"ActionPublish": 1},
-                       params={"ID": ID, "Key": self.loginData["SessionKey"]})
+                       params={"ID": ID, "Key": self.session.headers["X-Auth-Session-Key"]})
         return r.text() == "1"
 
     def set_profile(self, p):
@@ -241,7 +241,7 @@ class Client(object):
         """
         qs = {
             "ID": ID,
-            "Key": self.loginData["SessionKey"]
+            "Key": self.session.headers["X-Auth-Session-Key"]
         }
         r = self._get(self.base_url + "/Browse/Favourite.json", params=qs)
         return r.status_code == requests.codes.ok
@@ -254,7 +254,7 @@ class Client(object):
         """
         qs = {
             "ID": ID,
-            "Key": self.loginData["SessionKey"],
+            "Key": self.session.headers["X-Auth-Session-Key"],
             "Mode": "Remove"
         }
         r = self._get(self.base_url + "/Browse/Tags.json", params=qs)
