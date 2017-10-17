@@ -7,7 +7,7 @@ with open("README.rst") as f:
     long_description = f.read().replace("\r", "")
 
 with open("requirements.txt") as r:
-    requirements = f.read().replace("\r","").strip().split("\n")
+    requirements = r.read().replace("\r","").strip().split("\n")
 
 if version_info < (2, 7, 0) or (version_info[0] == 3 and
                                 version_info < (3, 3, 0)):
