@@ -17,7 +17,7 @@ if version_info < (2, 7, 0) or (version_info[0] == 3 and
 here = os.path.abspath(os.path.dirname(__file__))
 about = {}
 with open(os.path.join(here, 'tptapi', '__version__.py'), 'r') as f:
-    exec(f.read(), about)
+    exec(f.read(), about) # pylint: disable=exec-used
 
 setup(name='tptapi',
       version=about["__version__"],

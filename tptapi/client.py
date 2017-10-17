@@ -45,7 +45,8 @@ class Client(object):
         """
         return self.session.post(url, params=params, data=data)
 
-    def _headers(self):
+    @staticmethod
+    def _headers():
         """Returns common headers for all requests (GET & POST) to the API"""
         headers = {
             "X-Auth-User-Id": "0",

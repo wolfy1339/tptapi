@@ -5,6 +5,7 @@ pep8:
   full: true
   disable:
       - N803
+max-line-length: 120
 strictness: veryhigh
 pylint:
   disable:
