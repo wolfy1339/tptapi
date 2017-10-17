@@ -19,6 +19,7 @@ class Client(object):
         self.base_url = "http://powdertoy.co.uk"
         self.session = requests.Session()
         self.session.headers.update(self._headers())
+        self.SessionID = ''
 
     def _get(self, url, params=None):
         """Sends a GET request.
@@ -72,6 +73,7 @@ class Client(object):
         if status_ok:
             self.session.headers["X-Auth-User-Id"] = str(j["UserID"])
             self.session.headers["X-Auth-Session-Key"] = str(j["SessionKey"])
+            self.SessionID = j['SessionID']
             if len(j["Notifications"]):
                 notif = ", ".join(j["Notifications"])
                 six.print_("User has a new notifications: {0!s}".format(notif))
