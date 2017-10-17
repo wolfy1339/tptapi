@@ -259,7 +259,7 @@ class Client(object):
             "Key": self.session.headers["X-Auth-Session-Key"],
             "Mode": "Remove"
         }
-        r = self._get(self.base_url + "/Browse/Tags.json", params=qs)
+        r = self._get(self.base_url + "/Browse/Favourite.json", params=qs)
         return r.status_code == requests.codes.ok
 
     def save(self, name, desc, data):
